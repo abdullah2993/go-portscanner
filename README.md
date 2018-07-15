@@ -1,4 +1,4 @@
-# go-portscanner
+# go-portscanner [![Build Status](https://travis-ci.org/Abdullah2993/go-portscanner.svg?branch=master)](https://travis-ci.org/Abdullah2993/go-portscanner)
 
 ```
 Usage: portscanner [OPTION]... HOST
