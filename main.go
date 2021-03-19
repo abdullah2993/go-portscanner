@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 func main() {
@@ -32,11 +34,14 @@ func main() {
 	}
 
 	host := flag.Arg(0)
-	ports := make(chan uint, endPort+1-startPort)
+	totalPorts := endPort + 1 - startPort
+	ports := make(chan uint, totalPorts)
 	for i := startPort; i <= endPort; i++ {
 		ports <- i
 	}
 	close(ports)
+
+	bar := pb.StartNew(int(totalPorts))
 
 	results := make(chan uint, 100)
 
@@ -49,6 +54,7 @@ func main() {
 				if dial(host, p, timeout) {
 					results <- p
 				}
+				bar.Increment()
 			}
 			wg.Done()
 		}()
@@ -62,6 +68,7 @@ func main() {
 	for r := range results {
 		fmt.Println(r)
 	}
+	bar.Finish()
 }
 
 func dial(host string, port uint, timeout time.Duration) bool {
